@@ -8,7 +8,7 @@
 // search by name,surname and number at same time, sort by name or surname
 //in fuctions add checks
 
-void addClient(std::string name, std::string surname, std::string phoneNumber);
+void addClient(std::string name, std::string surname, std::string phoneNumber, person prs[], int numberOfContacs);
 
 void removeclient(std::string phoneNumber);
 
@@ -22,6 +22,12 @@ void changeInfo(std::string phoneNumber);
 
 void sortContacts(std::function<bool(std::string sortCondition)>condition);
                                             /*TODO: may be sorted by name or surname */
+void printInterface();
 
+bool checkPhoneNumber(person contacts[],int num,std::string phoneNumber,int length);
+
+int enteringCommand();
+
+bool cmdNumCheck(std::string input);
 
 #endif
