@@ -3,6 +3,7 @@
 
 #include <string>
 
+
 struct person
 {
     std::string name="gzeogozh";    //temp default name

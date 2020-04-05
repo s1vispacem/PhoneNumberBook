@@ -3,14 +3,15 @@
 #include "functions.h"
 #include <string>
 
+
 int main(int argc, char* argv[])
 {
    // std::string input;     // will be using through entire program//denied
     bool flagGloball=true;
     //TODO: add calculating number of contacts by file
-    int contactNum=5;
+    int numOfContacts=5;
 	int numCmd = 0;
-    //person* contact=new person[contactNum];
+    person* contact=new person[numOfContacts];
 	
     while(flagGloball)
     {
@@ -28,8 +29,11 @@ int main(int argc, char* argv[])
 
 		switch (numCmd)
 		{
-		case 1: {
-			//addClient();
+		case 1: //adding client
+		{
+			//int contactPos = getContactPos();
+			int contactPos = 5;	// blanc=> add funcs and replace
+			addClient(contact,contactPos, numOfContacts);
 			std::cout << "test call function addClient\n";
 		}
 		default:
