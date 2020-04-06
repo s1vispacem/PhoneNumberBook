@@ -3,6 +3,7 @@
 #include "person.h"
 #include "functions.h"
 #include <iostream>
+#include <iomanip>
 void addClient( person prs[],int contactPosNum,int numOfContacts) 
 {
 	std::string input;	
@@ -62,6 +63,7 @@ void addClient( person prs[],int contactPosNum,int numOfContacts)
 					{
 						std::cout << "no-no, enter age\n";
 					}
+					flag = false;
 				}
 			}
 			else
@@ -91,7 +93,8 @@ bool callableobjForPhoneNumber(std::string input, int  i,person prs[])
 void printInterface()
 {
 	std::cout << "enter num for command\n"
-		<< "1. Add client\n";
+		<< "1. Add client\n"
+		<< "2. print info all\n";
 }
 
 bool checkPhoneNumber(person contacts[], std::string input,int length)
@@ -133,6 +136,10 @@ int cmdWordCheck(std::string input)
 	{
 		return 1;
 	}
+	else if(input=="print info all")
+	{
+		return 2;
+	}
 	else
 	{
 		return 0;
@@ -141,21 +148,21 @@ int cmdWordCheck(std::string input)
 
 int cmdNumCheck(std::string input) 
 {
-	int i = 0;
-	int minus_ctr = 0;
+	//int i = 0;
 	if (input.length() == 1 && isdigit(input[0]))
 	{
 		//TODO: check by one num
-		for (int i = 0; i < avaliableComands; i++)	//const int avaliableComands in functions.h
+		for (int i = 0; i <= avaliableComands; i++)	//const int avaliableComands in functions.h
 		{
-			if (input[0] == i)
+			int castedInput =std::atoi(input.c_str());
+			if (castedInput == i)
 			{
 				return i;
 			}
 		}
 	}
 
-	return true;
+	return 0;
 }
 
 bool ageCheck(std::string input) 
@@ -171,4 +178,28 @@ bool ageCheck(std::string input)
 		i++;
 	}
 	return true;
+}
+
+void printInfoAll(person prs[], int numOfContacts) {
+	int width = 10;
+	std::cout << "name\t"<<std::setw(width)
+		<<"   surname\t" << std::setw(width) 
+		<<"phone number\t" << std::setw(width)
+		<< "    adress \t"<< std::setw(width)
+		<<"       age\t\n";
+	for (size_t i = 0; i < numOfContacts; i++)
+	{
+		std::cout<<  prs[i].name << "\t" <<
+			std::setw(width) <<prs[i].surname << "\t" <<
+			std::setw(width) << prs[i].phoneNumber << "\t" <<
+			std::setw(width) << prs[i].adress << "\t" <<
+			std::setw(width) << prs[i].age << "\t" <<
+			std::endl;
+			  
+		//std::cout << "name " << prs[i].name << std::endl;
+		//std::cout << "surname " << prs[i].surname << std::endl;
+		//std::cout << "phone number " << prs[i].phoneNumber << std::endl;
+		//std::cout << "adress " << prs[i].adress << std::endl;
+		//std::cout << "age " << prs[i].age << std::endl;
+	}
 }

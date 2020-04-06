@@ -6,11 +6,11 @@
 
 struct person
 {
-    std::string name="gzeogozh";    //temp default name
-    std::string surname;
-    std::string adress;
-    std::string phoneNumber;
-    int age;
+    std::string name="name";    //temp default name
+    std::string surname="surname";
+    std::string adress="adress";
+    std::string phoneNumber="phone number";
+    int age=999;
 };
 
 

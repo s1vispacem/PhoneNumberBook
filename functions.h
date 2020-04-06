@@ -8,7 +8,7 @@
 // search by name,surname and number at same time, sort by name or surname
 //in fuctions add checks
 
-const int avaliableComands = 1;
+const int avaliableComands = 2;
 
 void addClient(person prs[], int contactPosNum, int numOfContacts);
 
@@ -16,7 +16,7 @@ void removeclient(std::string phoneNumber);
 
 void printInfoByNumber(std::string);
 
-void printInfoAll(std::string  );
+void printInfoAll(person prs[],int numOfContacts  );
 
 void searchInfo(std::string input);
 

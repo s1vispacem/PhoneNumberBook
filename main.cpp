@@ -9,9 +9,13 @@ int main(int argc, char* argv[])
    // std::string input;     // will be using through entire program//denied
     bool flagGloball=true;
     //TODO: add calculating number of contacts by file
-    int numOfContacts=5;
+    int numOfContacts;
+
+
 	int numCmd = 0;
     person* contact=new person[numOfContacts];
+	
+	FILE save;
 	
     while(flagGloball)
     {
@@ -32,9 +36,19 @@ int main(int argc, char* argv[])
 		case 1: //adding client
 		{
 			//int contactPos = getContactPos();
-			int contactPos = 5;	// blanc=> add funcs and replace
+			int contactPos = 0;	// blanc=> add funcs and replace
 			addClient(contact,contactPos, numOfContacts);
 			std::cout << "test call function addClient\n";
+			break;
+		}
+		case 2: //temp pos for info print all
+		{
+			printInfoAll(contact, numOfContacts);
+			break;
+		}
+		case 3:// deleting contact
+		{
+			break;
 		}
 		default:
 			break;
