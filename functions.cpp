@@ -4,27 +4,34 @@
 #include "functions.h"
 #include <iostream>
 #include <iomanip>
-void addClient( person prs[],int contactPosNum,int numOfContacts) 
+#include <fstream>
+#include <vector>
+
+static const std::string path = "D:\IteaHW\PhoneNumberBook\PhoneNumberBook\savelog.txt";
+
+void addClient( std::vector<person>& prs) 
 {
+	person temp;
 	std::string input;	
 	bool flag = true;
 
 		std::cout << "Enter name for contact\n" //achtung:: idea of creating num ruled by self
 			<<"u can use numbers to mark someons phone number as alternative\n";
 		std::getline(std::cin, input);
-		prs[contactPosNum].name = input;
+		temp.name = input;
 
 		std::cout << "Enter surname for contact\n";
 		std::getline(std::cin, input);
-		prs[contactPosNum].surname = input;
+		temp.surname = input;
 
 		while (flag) {
 			std::cout << "Enter phone number\n";
 			std::getline(std::cin, input);
 			//TODO: find and check of existing phone number
-			if (checkPhoneNumber(prs,input,numOfContacts))
+			int length = prs.size();
+			if (checkPhoneNumber(prs,input,length))
 			{
-				prs[contactPosNum].phoneNumber = input;
+				temp.phoneNumber = input;
 				flag=false;
 			}
 			//Check phone number(input,prs)
@@ -38,8 +45,8 @@ void addClient( person prs[],int contactPosNum,int numOfContacts)
 			std::getline(std::cin, input);
 			if (input == "n")
 			{
-				prs[contactPosNum].adress = "unknown";
-				prs[contactPosNum].age = 0;
+				temp.adress = "unknown";
+				temp.age = 0;
 					
 				std::cout << "okke\n";
 				return;
@@ -48,7 +55,7 @@ void addClient( person prs[],int contactPosNum,int numOfContacts)
 			{
 				std::cout << "enter adress\n";
 				std::getline(std::cin, input);
-				prs[contactPosNum].adress = input;
+				temp.adress = input;
 				bool flagSubLocal=true;
 				while (flagSubLocal)
 				{
@@ -57,7 +64,7 @@ void addClient( person prs[],int contactPosNum,int numOfContacts)
 					if (ageCheck(input))
 					{
 						flagSubLocal = false;
-						prs[contactPosNum].age = std::stoi(input.c_str());
+						temp.age = std::stoi(input.c_str());
 					}
 					else
 					{
@@ -71,9 +78,13 @@ void addClient( person prs[],int contactPosNum,int numOfContacts)
 				std::cout <<"no-no, try again\n" ;
 			}
 		}
+
+		prs.resize(prs.size() + 1);
+		prs.push_back(temp);
+		std::cout << "pushed back\n";
 }
 
-void searchInfo(std::string input, int * contactNum,std::function<bool(std::string input, int * contactNum,person prs[])>callableobj)
+void searchInfo(std::string input, int * contactNum,std::function<bool(std::string input, int * contactNum,std::vector<person> &prs)>callableobj)
 {
 	for (int i = 0; i < *contactNum; i++)
 	{
@@ -84,9 +95,10 @@ void searchInfo(std::string input, int * contactNum,std::function<bool(std::stri
 	}
 }
 
-bool callableobjForPhoneNumber(std::string input, int  i,person prs[])
+bool callableobjForPhoneNumber(std::string input, int  i,std::vector<person> &prs)
 {
-	return input == prs[i].phoneNumber;
+	
+	return input == prs.at(i).phoneNumber;
 }
 
 
@@ -97,11 +109,11 @@ void printInterface()
 		<< "2. print info all\n";
 }
 
-bool checkPhoneNumber(person contacts[], std::string input,int length)
+bool checkPhoneNumber(std::vector<person>& prs, std::string input,int length)
 {
 	for (int i = 0; i < length; i++)//lenght = num of contacts
 	{
-			if (contacts[i].phoneNumber == input)
+			if (prs.at(i).phoneNumber == input)
 			{
 				return false;
 			}
@@ -180,26 +192,59 @@ bool ageCheck(std::string input)
 	return true;
 }
 
-void printInfoAll(person prs[], int numOfContacts) {
+void printInfoAll(std::vector<person>& prs) {
 	int width = 10;
 	std::cout << "name\t"<<std::setw(width)
 		<<"   surname\t" << std::setw(width) 
 		<<"phone number\t" << std::setw(width)
 		<< "    adress \t"<< std::setw(width)
 		<<"       age\t\n";
-	for (size_t i = 0; i < numOfContacts; i++)
+	for (size_t i = 0; i < prs.size(); i++)
 	{
-		std::cout<<  prs[i].name << "\t" <<
-			std::setw(width) <<prs[i].surname << "\t" <<
-			std::setw(width) << prs[i].phoneNumber << "\t" <<
-			std::setw(width) << prs[i].adress << "\t" <<
-			std::setw(width) << prs[i].age << "\t" <<
+		std::cout<<  prs.at(i).name << "\t" <<
+			std::setw(width) <<prs.at(i).surname << "\t" <<
+			std::setw(width) << prs.at(i).phoneNumber << "\t" <<
+			std::setw(width) << prs.at(i).adress << "\t" <<
+			std::setw(width) << prs.at(i).age << "\t" <<
 			std::endl;
 			  
-		//std::cout << "name " << prs[i].name << std::endl;
-		//std::cout << "surname " << prs[i].surname << std::endl;
-		//std::cout << "phone number " << prs[i].phoneNumber << std::endl;
-		//std::cout << "adress " << prs[i].adress << std::endl;
-		//std::cout << "age " << prs[i].age << std::endl;
+		
 	}
+}
+
+void genContacts(std::vector<person>&prsVec)
+{
+	person temp;
+	
+	std::fstream fs;
+	fs.open(path, std::fstream::in | std::fstream::out);
+	while (fs.read((char*)&temp, sizeof(person)))
+	{
+		prsVec.push_back(temp);
+
+	}
+	fs.close();
+}
+
+void syncContacts(std::vector<person>& prs)
+{
+	std::fstream fs;
+	fs.open(path , std::fstream::out);
+	
+	for (int i = 0; i < prs.size(); i ++ )
+	{
+		fs.read((char*)&prs.at(i), sizeof(person));
+	}
+
+	fs.close();
+
+}
+
+void testFillVector(std::vector<person>& prs)
+{
+	
+	//prs.at(prs.size() - 1).name = "namam";
+	prs.at(0).name = "namam";
+	prs.at(0).surname = "surnamam";
+	prs.at(0).phoneNumber = "=3231";
 }
