@@ -6,10 +6,10 @@
 
 struct person
 {
-    std::string name="name";    //temp default name
-    std::string surname="surname";
-    std::string adress="adress";
-    std::string phoneNumber="phone number";
+    std::string name="empty";    //temp default name
+    std::string surname="empty";
+    std::string adress="dadress";
+    std::string phoneNumber="no number";
     int age=999;
 };
 

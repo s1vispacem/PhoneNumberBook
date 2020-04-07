@@ -19,7 +19,7 @@ void printInfoByNumber(std::string);
 
 void printInfoAll(std::vector<person>& prs  );
 
-void searchInfo(std::string input, int * contactNum, std::function<bool(std::string input, int * contactNum, std::vector<person> &prs)>callableobj);
+int searchInfo(std::string input, std::function<bool(std::string input, std::vector<person> &prs)>callableobj, std::vector<person>&prs);
 
 void changeInfo(std::string phoneNumber);
 
@@ -43,4 +43,10 @@ void genContacts(std::vector<person>&prsVec);
 
 void testFillVector(std::vector<person>& prs);
 
-#endif
+void syncContacts(std::vector<person>& prs);
+
+void deleteContact(std::vector<person> &prs);
+
+
+
+#endif//

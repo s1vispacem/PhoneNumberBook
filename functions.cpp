@@ -7,7 +7,7 @@
 #include <fstream>
 #include <vector>
 
-static const std::string path = "D:\IteaHW\PhoneNumberBook\PhoneNumberBook\savelog.txt";
+static const std::string path = "DB.txt";
 
 void addClient( std::vector<person>& prs) 
 {
@@ -24,7 +24,7 @@ void addClient( std::vector<person>& prs)
 		std::getline(std::cin, input);
 		temp.surname = input;
 
-		while (flag) {
+		while (flag) {	//entering phone number
 			std::cout << "Enter phone number\n";
 			std::getline(std::cin, input);
 			//TODO: find and check of existing phone number
@@ -38,7 +38,7 @@ void addClient( std::vector<person>& prs)
 		}
 
 		flag = true;
-		while (flag)
+		while (flag)// extra: adding adres + age by option
 		{
 			std::cout << "if u want add adress and age\n write y to add \n or n to don`t\n ";
 				std::cout<< "(u can add or change them later )\n";
@@ -49,6 +49,7 @@ void addClient( std::vector<person>& prs)
 				temp.age = 0;
 					
 				std::cout << "okke\n";
+				prs.push_back(temp);
 				return;
 			}
 			else if (input == "y")
@@ -79,20 +80,22 @@ void addClient( std::vector<person>& prs)
 			}
 		}
 
-		prs.resize(prs.size() + 1);
+		//prs.resize(prs.size() + 1);
 		prs.push_back(temp);
 		std::cout << "pushed back\n";
 }
 
-void searchInfo(std::string input, int * contactNum,std::function<bool(std::string input, int * contactNum,std::vector<person> &prs)>callableobj)
+int searchInfo(std::string input,std::function<bool(std::string input, std::vector<person> &prs)>callableobj, std::vector<person>&prs)
 {
-	for (int i = 0; i < *contactNum; i++)
+	for (int i = 0; i < prs.size(); i++)
 	{
-		if (callableobj) 
+		if (callableobj(input,i,prs)) 
 		{
-
+			return i;
 		}
 	}
+	std::cout << "data not found\n";
+
 }
 
 bool callableobjForPhoneNumber(std::string input, int  i,std::vector<person> &prs)
@@ -101,6 +104,16 @@ bool callableobjForPhoneNumber(std::string input, int  i,std::vector<person> &pr
 	return input == prs.at(i).phoneNumber;
 }
 
+bool callableobjForName(std::string input, int  i, std::vector<person> &prs)
+{
+
+	return input == prs.at(i).name;
+}
+bool callableobjForSurname(std::string input, int  i, std::vector<person> &prs)
+{
+
+	return input == prs.at(i).surname;
+}
 
 void printInterface()
 {
@@ -194,14 +207,17 @@ bool ageCheck(std::string input)
 
 void printInfoAll(std::vector<person>& prs) {
 	int width = 10;
-	std::cout << "name\t"<<std::setw(width)
+	int length = prs.size();
+	std::cout << "length =" << length<<"\n\n";
+
+	std::cout<<std::setw(width) << "name\t"<<std::setw(width)
 		<<"   surname\t" << std::setw(width) 
 		<<"phone number\t" << std::setw(width)
 		<< "    adress \t"<< std::setw(width)
 		<<"       age\t\n";
-	for (size_t i = 0; i < prs.size(); i++)
+	for (size_t i = 0; i < length; i++)
 	{
-		std::cout<<  prs.at(i).name << "\t" <<
+		std::cout<< std::setw(width)<<  prs.at(i).name << "\t" <<
 			std::setw(width) <<prs.at(i).surname << "\t" <<
 			std::setw(width) << prs.at(i).phoneNumber << "\t" <<
 			std::setw(width) << prs.at(i).adress << "\t" <<
@@ -212,15 +228,15 @@ void printInfoAll(std::vector<person>& prs) {
 	}
 }
 
-void genContacts(std::vector<person>&prsVec)
+void genContacts(std::vector<person>&prs)
 {
 	person temp;
 	
 	std::fstream fs;
-	fs.open(path, std::fstream::in | std::fstream::out);
+	fs.open(path, std::fstream::in | std::fstream::out | std::fstream::app);
 	while (fs.read((char*)&temp, sizeof(person)))
 	{
-		prsVec.push_back(temp);
+		prs.push_back(temp);
 
 	}
 	fs.close();
@@ -230,10 +246,11 @@ void syncContacts(std::vector<person>& prs)
 {
 	std::fstream fs;
 	fs.open(path , std::fstream::out);
-	
+	fs.clear();
+
 	for (int i = 0; i < prs.size(); i ++ )
 	{
-		fs.read((char*)&prs.at(i), sizeof(person));
+		fs.write((char*)&prs.at(i), sizeof(person));
 	}
 
 	fs.close();
@@ -247,4 +264,25 @@ void testFillVector(std::vector<person>& prs)
 	prs.at(0).name = "namam";
 	prs.at(0).surname = "surnamam";
 	prs.at(0).phoneNumber = "=3231";
+}
+
+void deleteContact(std::vector<person> &prs)
+{
+	std::string input;
+	person temp;
+	size_t length = prs.size();
+	std::cout << "enter phone number to delete\n";
+	std::cin >> input;
+
+	searchInfo(input, callableobjForPhoneNumber, prs);
+
+	/*for (size_t i = 0; i < length; i++)
+	{
+		if (prs.at(i).phoneNumber == input)
+		{
+			prs.erase(prs.begin() + i);
+		}
+	}*/
+
+
 }

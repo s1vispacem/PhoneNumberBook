@@ -13,7 +13,11 @@ int main(int argc, char* argv[])
     int numOfContacts=1;
 	int numCmd = 0;
 
+	
+
+
 	std::vector<person> prs;
+	//prs.resize(1);
 
 	genContacts(prs);
 	//if (argc > 1)
@@ -43,16 +47,19 @@ int main(int argc, char* argv[])
 		case 1: //adding client
 		{		
 			addClient(prs);
-			std::cout << "test call function addClient\n";
+			syncContacts(prs);
 			break;
 		}
 		case 2: //temp pos for info print all
 		{
 			printInfoAll(prs);
+		//	syncContacts(prs);
 			break;
 		}
 		case 3:// deleting contact
 		{
+			deleteContact(prs);
+			syncContacts(prs);
 			break;
 		}
 		default:
