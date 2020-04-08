@@ -50,7 +50,7 @@ int main(int argc, char* argv[])
 			syncContacts(prs);
 			break;
 		}
-		case 2: //temp pos for info print all
+		case 2: // info print all
 		{
 			printInfoAll(prs);
 		//	syncContacts(prs);
@@ -61,6 +61,21 @@ int main(int argc, char* argv[])
 			deleteContact(prs);
 			syncContacts(prs);
 			break;
+		}
+		case 4: //modify contact
+		{
+			modifyContact(prs);
+			syncContacts(prs);
+		}
+		case 5:
+		{
+			sortContacts(prs);//not working
+			syncContacts(prs);
+		}
+		case 6:
+		{
+			searchContact(prs);
+			syncContacts(prs);
 		}
 		default:
 			break;

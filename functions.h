@@ -9,11 +9,11 @@
 // search by name,surname and number at same time, sort by name or surname
 //in fuctions add checks
 
-const int avaliableComands = 2;
+const int avaliableComands = 6;
 
 void addClient(std::vector<person>& prs);
 
-void removeclient(std::string phoneNumber);
+void deleteContact(std::vector<person> &prs);
 
 void printInfoByNumber(std::string);
 
@@ -46,6 +46,18 @@ void testFillVector(std::vector<person>& prs);
 void syncContacts(std::vector<person>& prs);
 
 void deleteContact(std::vector<person> &prs);
+
+void modifyContact(std::vector<person>&prs);
+
+void searchContact(std::vector<person>& prs);
+
+void sortContacts(std::vector<person>& prs);
+
+bool swap_names(std::vector<person>& prs, int pos1, int pos2);
+
+bool swap_surnames(std::vector<person>& prs, int pos1, int pos2);
+
+void sortByName(std::vector<person>&prs);
 
 
 

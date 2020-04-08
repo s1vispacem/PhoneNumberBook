@@ -85,13 +85,14 @@ void addClient( std::vector<person>& prs)
 		std::cout << "pushed back\n";
 }
 
+// try of making unificated func for search info, which will be using in checking phoneNumber, searching contact, deleting, sorting, modifying
 int searchInfo(std::string input,std::function<bool(std::string input, std::vector<person> &prs)>callableobj, std::vector<person>&prs)
 {
 	for (int i = 0; i < prs.size(); i++)
 	{
-		if (callableobj(input,i,prs)) 
+		if (callableobj) 
 		{
-			return i;
+			return i;//returns pos in vector for prs.at(i).*;
 		}
 	}
 	std::cout << "data not found\n";
@@ -100,7 +101,6 @@ int searchInfo(std::string input,std::function<bool(std::string input, std::vect
 
 bool callableobjForPhoneNumber(std::string input, int  i,std::vector<person> &prs)
 {
-	
 	return input == prs.at(i).phoneNumber;
 }
 
@@ -119,7 +119,11 @@ void printInterface()
 {
 	std::cout << "enter num for command\n"
 		<< "1. Add client\n"
-		<< "2. print info all\n";
+		<< "2. print info all\n"
+		<<"3. delete contact\n"
+		<<"4. modify contact\n"
+		<<"5. sort contacts\n"
+		<<"6. search contact\n";
 }
 
 bool checkPhoneNumber(std::vector<person>& prs, std::string input,int length)
@@ -165,6 +169,23 @@ int cmdWordCheck(std::string input)
 	{
 		return 2;
 	}
+	else if (input == "delete contact")
+	{
+		return 3;
+	}
+	else if (input == "modify contact")
+	{
+		return 4;
+	}
+	else if (input == "sort contacts")
+	{
+		return 5;
+	}
+	else if (input == "search contact")
+	{
+		return 6;
+	}
+
 	else
 	{
 		return 0;
@@ -228,7 +249,7 @@ void printInfoAll(std::vector<person>& prs) {
 	}
 }
 
-void genContacts(std::vector<person>&prs)
+void genContacts(std::vector<person>&prs)//fix genering contacts from file
 {
 	person temp;
 	
@@ -242,7 +263,7 @@ void genContacts(std::vector<person>&prs)
 	fs.close();
 }
 
-void syncContacts(std::vector<person>& prs)
+void syncContacts(std::vector<person>& prs)// fix sync with file
 {
 	std::fstream fs;
 	fs.open(path , std::fstream::out);
@@ -274,15 +295,231 @@ void deleteContact(std::vector<person> &prs)
 	std::cout << "enter phone number to delete\n";
 	std::cin >> input;
 
-	searchInfo(input, callableobjForPhoneNumber, prs);
+	//int pos =searchInfo(input, callableobjForPhoneNumber, prs);
 
-	/*for (size_t i = 0; i < length; i++)
+	for (size_t i = 0; i < length; i++)
 	{
 		if (prs.at(i).phoneNumber == input)
 		{
 			prs.erase(prs.begin() + i);
+			break;
 		}
-	}*/
+	}
 
 
+}
+
+void modifyContact(std::vector<person>&prs)
+{
+	std::string input;
+	size_t length = prs.size();
+	int pos;
+	bool flagCheck = false;
+	bool flag = true;
+	while (flag)
+	{
+		std::cout << "enter phone number to modify contact\n";
+		std::cin >> input;
+
+		for (size_t i = 0; i < length; i++)
+		{
+			if (prs.at(i).phoneNumber == input)
+			{
+				pos = i;
+				flagCheck = true;
+				break;
+			}
+
+		}
+		if (flagCheck)
+		{
+			flag = false;
+		}
+		else
+		{
+			std::cout << "phone number not found\n try again\n";
+		}
+	}
+	flag = true;
+	while (flag)
+	{
+		std::cout << "enter num to modify:\n"
+			<< "1 to change name\n "
+			<< "2 to change surname\n "
+			<< "3 to change adress\n "
+			<< "4 to change phone number\n "
+			<< "5 to change age\n "
+			<< "0 to exit\n";
+		std::cin >> input;
+		int num = std::stoi(input);
+		if (num == 1)
+		{
+			std::cout << "enter new name\n";
+			std::cin >> input;
+			prs.at(pos).name = input;
+
+		}
+		else if (num == 2)
+		{
+
+			std::cout << "enter new surname\n";
+			std::cin >> input;
+			prs.at(pos).surname = input;
+		}
+		else if (num == 2)
+		{
+
+			std::cout << "enter new adress\n";
+			std::cin >> input;
+			prs.at(pos).adress = input;
+		}
+		else if (num == 4)
+		{
+			flag = true;
+			while (flag)
+			{
+				std::cout << "enter new phone number\n";
+				std::cin >> input;
+				if (checkPhoneNumber(prs, input, length))
+				{
+					prs.at(pos).phoneNumber = input;
+					flag = false;
+				}
+				else
+				{
+					std::cout << "this phone number already taken\n";
+				}
+			}
+		}
+		else if (num == 5)
+		{
+			flag = true;
+			while (flag)
+			{
+				std::cout << "enter age\n";
+				std::cin >> input;
+				if (ageCheck(input))
+				{
+					prs.at(pos).age = std::stoi(input);
+					flag = false;
+				}
+				else
+				{
+					std::cout << "error: bad data\n try again\n";
+				}
+
+			}
+
+		}
+		else if (num == 0)
+		{
+			std::cout << "decline called\n exiting\n";
+		}
+		else
+		{
+			std::cout << "bad data input\n try again\n";
+		}
+
+
+	}
+}
+
+void searchContact(std::vector<person>&prs)
+{
+	bool flag = true;
+	std::string input;
+	while (flag)
+	{
+		std::cout << "enter piece of contact\n";
+		std::cin >> input;
+
+
+
+	}
+}
+
+void sortContacts(std::vector<person>&prs)
+{
+	bool flag = true;
+	std::string input;
+	int num;
+	while (flag)
+	{
+		std::cout << "choose how to sort contacts\n"
+			<<"1 to sort by name\n"
+			<<"2 to sort by surname\n";
+		std::cin >> input;
+		num = std::stoi(input);
+		if (num == 1)
+		{
+			//sortByName();
+			flag = false;
+			std::cout << "sorted\n";
+		}
+		else if (num == 2)
+		{
+			//sortBySurname();
+			flag = false;
+			std::cout << "sorted\n";
+		}
+		else
+		{
+			std::cout << "no-no, try again\n";
+		}
+	}
+}
+
+bool swap_names(std::vector<person>&prs,int pos1, int pos2)
+{
+	std::string temp;
+
+	temp = prs.at(pos1).name;
+	prs.at(pos1).name = prs.at(pos2).name;
+	prs.at(pos2).name = temp;
+}
+
+bool swap_surnames(std::vector<person>&prs, int pos1, int pos2)
+{
+	std::string temp;
+
+	temp = prs.at(pos1).surname;
+	prs.at(pos1).surname = prs.at(pos2).surname;
+	prs.at(pos2).surname = temp;
+}
+
+void sortByName(std::vector<person>&prs) //question: how to unificate sort func for using with name and surname
+{
+	size_t length = prs.size();
+	bool b = true;
+	//person beg=prs.at(0);
+	int beg = -1;
+	//person end = prs.at(prs.size()-1);
+	int end = prs.size() - 1;
+	while (b)
+	{
+		b = false;
+		beg++;
+		for (size_t i = beg; i < end; i++)
+		{
+			if (prs.at(i).name[0] > prs.at(i + 1).name[0])
+			//if(callobjsortname(prs.at(i).name[0],prs.at(i + 1).name[0]))// doesnt make much sense
+			{
+				swap_names(prs, i, i + 1);
+				b = true;
+			}
+		}
+		if(!b)
+		{
+			break;
+		}
+		end--;
+		for (size_t i = end; i > beg; i--)
+		{
+			if (prs.at(i).name[0] < prs.at(i - 1).name[0])
+			{
+				swap_names(prs, i, i + 1);
+				b = true;
+			}
+		}
+	}
 }
