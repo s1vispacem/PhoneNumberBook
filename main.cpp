@@ -52,30 +52,72 @@ int main(int argc, char* argv[])
 		}
 		case 2: // info print all
 		{
-			printInfoAll(prs);
-		//	syncContacts(prs);
+			if (prs.size() > 0)
+			{
+				printInfoAll(prs);
+				syncContacts(prs);
+			}
+			else
+			{
+				std::cout << "nothing to print\n";
+			}
 			break;
 		}
 		case 3:// deleting contact
 		{
-			deleteContact(prs);
-			syncContacts(prs);
+			if (prs.size() > 0)
+			{
+				deleteContact(prs);
+				syncContacts(prs);
+			}
+			else
+			{
+				std::cout << "nothing to delete\n";
+			}
 			break;
 		}
 		case 4: //modify contact
 		{
-			modifyContact(prs);
-			syncContacts(prs);
+			if (prs.size() > 0)
+			{
+				modifyContact(prs);
+				syncContacts(prs);
+			}
+			else
+			{
+				std::cout << "nothing to modify\n";
+			}
+			break;
 		}
-		case 5:
+		case 5://sortin by name or surname
 		{
-			sortContacts(prs);//not working
-			syncContacts(prs);
+			if (prs.size() > 0)
+			{
+				sortContacts(prs);
+				syncContacts(prs);
+			}
+			else
+			{
+				std::cout << "nothing to sort\n";
+			}
+			break;
 		}
 		case 6:
-		{
-			searchContact(prs);
+		{	if (prs.size() > 0)
+			{ 
+			searchContact(prs);//not working as planned
 			syncContacts(prs);
+			}
+		else
+		{
+			std::cout << "nothing to print\n";
+		}
+			break;
+		}
+		case 7:
+		{
+			std::cout << "see you later\n";
+			flagGloball = false;
 		}
 		default:
 			break;

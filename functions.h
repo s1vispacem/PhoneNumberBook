@@ -9,7 +9,7 @@
 // search by name,surname and number at same time, sort by name or surname
 //in fuctions add checks
 
-const int avaliableComands = 6;
+const int avaliableComands = 7;
 
 void addClient(std::vector<person>& prs);
 
@@ -27,7 +27,7 @@ void sortContacts(std::function<bool(std::string sortCondition)>condition);
                                             /*TODO: may be sorted by name or surname */
 void printInterface();
 
-bool checkPhoneNumber(std::vector<person>&prs,std::string phoneNumber,int length);
+bool checkPhoneNumber(std::vector<person>&prs,std::string input);
 
 int enteringCommand();
 
@@ -53,12 +53,12 @@ void searchContact(std::vector<person>& prs);
 
 void sortContacts(std::vector<person>& prs);
 
-bool swap_names(std::vector<person>& prs, int pos1, int pos2);
-
-bool swap_surnames(std::vector<person>& prs, int pos1, int pos2);
+void swap_prs(std::vector<person>& prs, int pos1, int pos2);
 
 void sortByName(std::vector<person>&prs);
 
+void sortBySurname(std::vector<person>&prs);
 
+void printInfo(std::vector<person>&prs, int pos);
 
 #endif//

@@ -8,6 +8,7 @@
 #include <vector>
 
 static const std::string path = "DB.txt";
+const std::string extraInfoPath="eip.txt";
 
 void addClient( std::vector<person>& prs) 
 {
@@ -27,12 +28,15 @@ void addClient( std::vector<person>& prs)
 		while (flag) {	//entering phone number
 			std::cout << "Enter phone number\n";
 			std::getline(std::cin, input);
-			//TODO: find and check of existing phone number
 			int length = prs.size();
-			if (checkPhoneNumber(prs,input,length))
+			if (checkPhoneNumber(prs,input))
 			{
 				temp.phoneNumber = input;
 				flag=false;
+			}
+			else 
+			{
+				std::cout << "number already has been taken\n";
 			}
 			//Check phone number(input,prs)
 		}
@@ -123,16 +127,17 @@ void printInterface()
 		<<"3. delete contact\n"
 		<<"4. modify contact\n"
 		<<"5. sort contacts\n"
-		<<"6. search contact\n";
+		<<"6. search contact\n"
+		<<"7. exit\n";
 }
 
-bool checkPhoneNumber(std::vector<person>& prs, std::string input,int length)
+bool checkPhoneNumber(std::vector<person>& prs, std::string input)
 {
-	for (int i = 0; i < length; i++)//lenght = num of contacts
+	for (int i = 0; i < prs.size(); i++)//lenght = num of contacts
 	{
 			if (prs.at(i).phoneNumber == input)
 			{
-				return false;
+				return true;
 			}
 			
 	}
@@ -184,6 +189,10 @@ int cmdWordCheck(std::string input)
 	else if (input == "search contact")
 	{
 		return 6;
+	}
+	else if (input == "exit")
+	{
+		return 7;
 	}
 
 	else
@@ -252,20 +261,34 @@ void printInfoAll(std::vector<person>& prs) {
 void genContacts(std::vector<person>&prs)//fix genering contacts from file
 {
 	person temp;
-	
+	int amountOfRecs;
 	std::fstream fs;
+	fs.open(extraInfoPath, std::fstream::in);
+	fs.read((char*)&amountOfRecs, sizeof(int));
+	fs.close();
 	fs.open(path, std::fstream::in | std::fstream::out | std::fstream::app);
-	while (fs.read((char*)&temp, sizeof(person)))
+	/*while (fs.read((char*)&temp, sizeof(person)) && !fs.bad() &&!fs.eof() && !fs.fail())
 	{
 		prs.push_back(temp);
-
+	}*/
+	for (int i = 0; i < amountOfRecs; i++)
+	{
+		fs.read((char*)&temp, sizeof(person));
+		prs.push_back(temp);
 	}
+
 	fs.close();
 }
 
 void syncContacts(std::vector<person>& prs)// fix sync with file
 {
+
 	std::fstream fs;
+	fs.open(extraInfoPath, std::fstream::out);
+	int amount = prs.size();
+	fs.write((char*)&amount, sizeof(int));
+	fs.close();
+
 	fs.open(path , std::fstream::out);
 	fs.clear();
 
@@ -292,22 +315,37 @@ void deleteContact(std::vector<person> &prs)
 	std::string input;
 	person temp;
 	size_t length = prs.size();
-	std::cout << "enter phone number to delete\n";
-	std::cin >> input;
+	bool flagDel = true;
+	
+	
+		std::cout << "enter phone number to delete\n(type out to exit deleting)\n";
+		std::cin >> input;
+		if (input == "out")
+		{
+			std::cout << "okke\n";
+			flagDel = false;
+			
+		}
+		 if (checkPhoneNumber(prs, input))
+		{
 
+			for (size_t i = 0; i < length; i++)
+			{
+				if (prs.at(i).phoneNumber == input)
+				{
+					prs.erase(prs.begin() + i);
+					flagDel = false;
+					break;
+				}
+			}
+		}
+		else
+		{
+			std::cout << "phone not found\n";
+		}
+}
 	//int pos =searchInfo(input, callableobjForPhoneNumber, prs);
 
-	for (size_t i = 0; i < length; i++)
-	{
-		if (prs.at(i).phoneNumber == input)
-		{
-			prs.erase(prs.begin() + i);
-			break;
-		}
-	}
-
-
-}
 
 void modifyContact(std::vector<person>&prs)
 {
@@ -366,7 +404,7 @@ void modifyContact(std::vector<person>&prs)
 			std::cin >> input;
 			prs.at(pos).surname = input;
 		}
-		else if (num == 2)
+		else if (num == 3)
 		{
 
 			std::cout << "enter new adress\n";
@@ -380,7 +418,7 @@ void modifyContact(std::vector<person>&prs)
 			{
 				std::cout << "enter new phone number\n";
 				std::cin >> input;
-				if (checkPhoneNumber(prs, input, length))
+				if (checkPhoneNumber(prs, input))
 				{
 					prs.at(pos).phoneNumber = input;
 					flag = false;
@@ -428,14 +466,57 @@ void searchContact(std::vector<person>&prs)
 {
 	bool flag = true;
 	std::string input;
+	size_t length = prs.size();
 	while (flag)
 	{
-		std::cout << "enter piece of contact\n";
+		std::cout << "enter name, surname or adress\n";
 		std::cin >> input;
 
+		for (size_t i = 0; i < length; i++)
+		{
+			if (prs.at(i).name == input)
+			{
+				printInfo(prs, i);
+			}
+			if (prs.at(i).surname == input)
+			{
+				printInfo(prs, i);
+			}
+			if (prs.at(i).adress == input)
+			{
+				printInfo(prs, i);
+			}
+		}
 
+		while (1) {
+			std::cout << "repeat search ? \n ( y / n)\n";
+			std::cin >> input;
+			if (input == "y")
+			{
+				std::cout << "okke\n";
+				break;
+			}
+			else if (input == "n")
+			{
+				flag = false;
+				break;
+			}
+			else
+			{
+				std::cout << "try again\n";
+			}
+		}
 
 	}
+}
+
+void printInfo(std::vector<person>&prs, int pos)
+{
+	std::cout << "name:" << prs.at(pos).name<<std::endl
+		<< "surname:" << prs.at(pos).surname << std::endl
+		<< "adress:" << prs.at(pos).adress << std::endl
+		<< "phone number:" << prs.at(pos).phoneNumber << std::endl
+		<< "age:" << prs.at(pos).age << std::endl;
 }
 
 void sortContacts(std::vector<person>&prs)
@@ -452,13 +533,13 @@ void sortContacts(std::vector<person>&prs)
 		num = std::stoi(input);
 		if (num == 1)
 		{
-			//sortByName();
+			sortByName(prs);
 			flag = false;
 			std::cout << "sorted\n";
 		}
 		else if (num == 2)
 		{
-			//sortBySurname();
+			sortBySurname(prs);
 			flag = false;
 			std::cout << "sorted\n";
 		}
@@ -469,25 +550,52 @@ void sortContacts(std::vector<person>&prs)
 	}
 }
 
-bool swap_names(std::vector<person>&prs,int pos1, int pos2)
+void swap_prs(std::vector<person>&prs,int pos1, int pos2)
 {
-	std::string temp;
+	person temp;
 
-	temp = prs.at(pos1).name;
-	prs.at(pos1).name = prs.at(pos2).name;
-	prs.at(pos2).name = temp;
+	temp = prs.at(pos1);
+	prs.at(pos1) = prs.at(pos2);
+	prs.at(pos2) = temp;
 }
-
-bool swap_surnames(std::vector<person>&prs, int pos1, int pos2)
-{
-	std::string temp;
-
-	temp = prs.at(pos1).surname;
-	prs.at(pos1).surname = prs.at(pos2).surname;
-	prs.at(pos2).surname = temp;
-}
-
 void sortByName(std::vector<person>&prs) //question: how to unificate sort func for using with name and surname
+{
+	size_t length = prs.size();
+	bool b = true;
+	
+	int beg = -1;
+
+	int end = prs.size() - 1;
+	while (b)
+	{
+		b = false;
+		beg++;
+		for (size_t i = beg; i < end; i++)
+		{
+			if (prs.at(i).name[0] > prs.at(i + 1).name[0])
+			//if(callobjsortname(prs.at(i).name[0],prs.at(i + 1).name[0]))// doesnt make much sense
+			{
+				swap_prs(prs, i, i + 1);
+				b = true;
+			}
+		}
+		if(!b)
+		{
+			break;
+		}
+		end--;
+		for (size_t i = end; i > beg; i--)
+		{
+			if (prs.at(i).name[0] < prs.at(i - 1).name[0])
+			{
+				swap_prs(prs, i, i + 1);
+				b = true;
+			}
+		}
+	}
+}
+
+void sortBySurname(std::vector<person>&prs) //question: how to unificate sort func for using with name and surname
 {
 	size_t length = prs.size();
 	bool b = true;
@@ -501,25 +609,26 @@ void sortByName(std::vector<person>&prs) //question: how to unificate sort func 
 		beg++;
 		for (size_t i = beg; i < end; i++)
 		{
-			if (prs.at(i).name[0] > prs.at(i + 1).name[0])
-			//if(callobjsortname(prs.at(i).name[0],prs.at(i + 1).name[0]))// doesnt make much sense
+			if (prs.at(i).surname[0] > prs.at(i + 1).surname[0])
+				//if(callobjsortname(prs.at(i).name[0],prs.at(i + 1).name[0]))// doesnt make much sense
 			{
-				swap_names(prs, i, i + 1);
+				swap_prs(prs, i, i + 1);
 				b = true;
 			}
 		}
-		if(!b)
+		if (!b)
 		{
 			break;
 		}
 		end--;
 		for (size_t i = end; i > beg; i--)
 		{
-			if (prs.at(i).name[0] < prs.at(i - 1).name[0])
+			if (prs.at(i).surname[0] < prs.at(i - 1).surname[0])
 			{
-				swap_names(prs, i, i + 1);
+				swap_prs(prs, i, i + 1);
 				b = true;
 			}
 		}
 	}
 }
+
